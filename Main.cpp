@@ -34,6 +34,7 @@ int main() {
   float sum=0, laik, vid, med;
   for (int i=0; i<n; i++)
   {
+
     cout<<"Iveskite "<<i+1<<"-o studento varda ir pavarde:" <<endl;
     cin>>tempas.vardas>>tempas.pavarde;
     sum=0;
@@ -63,19 +64,24 @@ int main() {
     }
 }
 
-void print(studentas kint){
- cout << "\n\n";
-    cout << setw(20) << left << "Vardas"
-        << setw(20) << left << "Pavarde"
-        << setw(18) << left << "Galutinis(vid.)/"
-        << left << "Galutinis(med.)\n"
+
+void print_student(std::vector<studentas> Eil, int pazymiu_sk) //atspausdina rezultatus
+{
+    std::ofstream output;
+    output.open("rezultatai.txt");
+    output << std::setw(20) << std::left << "Vardas"
+        << std::setw(20) << std::left << "Pavarde"
+        << std::setw(18) << std::left << "Galutinis(vid.)/"
+        << std::left << "Galutinis(med.)\n"
         << "--------------------------------------------------------------------------\n";
+    for (int i = 0; i < Eil.size(); i++)
     {
-   cout<<setw(20)<<kint.vardas<<setw(20)<<kint.pavarde;
-      //for (auto &i: kint.paz) cout<<setw(5)<<i;
-      cout<<setw(5)<<setprecision(2)<<kint.galut<<endl;
-      cout<<mediana(kint.mediana);
-}
+        output << std::setw(20) << std::left << Eil[i].vardas
+            << std::setw(20) << std::left << Eil[i].pavarde
+            << std::setw(18) << std::left << Eil[i].galut
+            << mediana(Eil[i].paz) << std::endl;
+    }
+    output << "\n\n";
 }
 
 double mediana( vector<float> &vec) {
@@ -86,4 +92,37 @@ double mediana( vector<float> &vec) {
   sort(vec.begin(), vec.end());
   vecSize vid = size / 2;
   return size % 2 == 0? (vec[vid] + vec[vid-1]) / 2 : vec[vid];
+}
+
+void read_from_file(std::vector<studentas>& Eil, int* pazymiu_sk)
+{
+    int student_counter = 0;
+    int temp;
+    std::ifstream fileRead;
+    std::string buff;
+    fileRead.open("studentai10000.txt");
+    if (fileRead.is_open())
+    {
+        getline(fileRead >> std::ws, buff);
+        *pazymiu_sk = countWordsInString(buff) - 3;
+        while (true)
+        {
+
+            Eil.resize(Eil.size() + 1);
+            fileRead >> Eil.at(student_counter).vardas;
+            if (fileRead.eof()) { Eil.pop_back(); break; }
+            fileRead >> Eil.at(student_counter).pavarde;
+            for (int i = 0; i < *pazymiu_sk; i++)
+            {
+                fileRead >> temp;
+                Eil.at(student_counter).paz.push_back(temp);
+            }
+            fileRead >> Eil.at(student_counter).egz;
+            //std::cout << Eil.at(student_counter).Vard;
+            Eil.at(student_counter).galut = Eil.at(student_counter).galut / *pazymiu_sk;
+            Eil.at(student_counter).galut = Eil.at(student_counter).galut * 0.4 + 0.6 * Eil.at(student_counter).egz;
+            student_counter++;
+        }
+    }
+    else { std::cout << "-\n"; }
 }
