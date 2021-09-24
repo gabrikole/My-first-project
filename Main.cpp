@@ -4,6 +4,10 @@
 #include <vector>
 #include <algorithm>
 #include <numeric>
+#include <stdlib.h>
+#include <sstream>
+#include <fstream>
+#include <iterator>
 
 using std::cout;
 using std::cin;
@@ -13,6 +17,10 @@ using std::setw;
 using std::setprecision;
 using std::vector;
 using std::left;
+using std::ofstream;
+using std::domain_error;
+using std::ifstream;
+
 
 struct studentas{
   string vardas, pavarde;
@@ -27,9 +35,9 @@ double mediana(vector<float> &vec);
 
 
 
-void print(std::vector<studentas> Eil, int pazymiu_sk) 
+void print(vector<studentas> Eil, int pazymiu_sk) 
 {
-    std::ofstream output;
+    ofstream output;
     output.open("rezultatai.txt");
     output << setw(20) << left << "Vardas"
         << setw(20) << left << "Pavarde"
@@ -41,7 +49,7 @@ void print(std::vector<studentas> Eil, int pazymiu_sk)
         output << setw(20) << left << Eil[i].vardas
             << setw(20) << left << Eil[i].pavarde
             << setw(18) << left << Eil[i].galut
-            << mediana(Eil[i].paz) << std::endl;
+            << mediana(Eil[i].paz) << endl;
     }
     output << "\n\n";
 }
@@ -50,45 +58,45 @@ double mediana( vector<float> &vec) {
   typedef vector<float>::size_type vecSize;
   vecSize size = vec.size();
   if (size == 0) 
-    throw std::domain_error("negalima skaiciuoti medianos tusciam vektoriui");
+    throw domain_error("negalima skaiciuoti medianos tusciam vektoriui");
   sort(vec.begin(), vec.end());
   vecSize vid = size / 2;
   return size % 2 == 0? (vec[vid] + vec[vid-1]) / 2 : vec[vid];
 }
 
-unsigned int countWordsInString(std::string const& str)
+unsigned int count(string const& str)
 {
     std::stringstream stream(str);
-    return std::distance(std::iostream_iterator<std::string>(stream), std::iostream_iterator<std::string>());
+    return std::distance(std::istream_iterator<string>(stream), std::istream_iterator<string>());
 }
 
-void read_from_file(std::vector<studentas>& Eil, int* pazymiu_sk)
+void read(vector<studentas>& Eil, int* pazymiai)
 {
-    int student_counter = 0;
+    int skaiciuok = 0;
     int temp;
-    std::ifstream fileRead;
-    std::string buff;
+    ifstream fileRead;
+    string buff;
     fileRead.open("studentai10000.txt");
     if (fileRead.is_open())
     {
         getline(fileRead >> std::ws, buff);
-        *pazymiu_sk = countWordsInString(buff) - 3;
+        *pazymiai = count(buff) - 3;
         while (true)
         {
 
             Eil.resize(Eil.size() + 1);
-            fileRead >> Eil.at(student_counter).vardas;
+            fileRead >> Eil.at(skaiciuok).vardas;
             if (fileRead.eof()) { Eil.pop_back(); break; }
-            fileRead >> Eil.at(student_counter).pavarde;
-            for (int i = 0; i < *pazymiu_sk; i++)
+            fileRead >> Eil.at(skaiciuok).pavarde;
+            for (int i = 0; i < *pazymiai; i++)
             {
                 fileRead >> temp;
-                Eil.at(student_counter).paz.push_back(temp);
+                Eil.at(skaiciuok).paz.push_back(temp);
             }
-            fileRead >> Eil.at(student_counter).egz;
-            Eil.at(student_counter).galut = Eil.at(student_counter).galut / *pazymiu_sk;
-            Eil.at(student_counter).galut = Eil.at(student_counter).galut * 0.4 + 0.6 * Eil.at(student_counter).egz;
-            student_counter++;
+            fileRead >> Eil.at(skaiciuok).egz;
+            Eil.at(skaiciuok).galut = Eil.at(skaiciuok).galut / *pazymiai;
+            Eil.at(skaiciuok).galut = Eil.at(skaiciuok).galut * 0.4 + 0.6 * Eil.at(skaiciuok).egz;
+            skaiciuok++;
         }
     }
     else { std::cout << "-\n"; }
@@ -97,11 +105,11 @@ void read_from_file(std::vector<studentas>& Eil, int* pazymiu_sk)
 
 int main()
 {
-    int pazymiu_sk;
+    int pazymiai;
     char temp;
-    std::vector<studentas> Eil;
-    read_from_file(Eil, &pazymiu_sk);
-    print(Eil, pazymiu_sk);
+    vector<studentas> Eil;
+    read(Eil, &pazymiai);
+    print(Eil, pazymiai);
     system("pause");
     return 0;
 }
