@@ -118,7 +118,7 @@ void read(vector<duomenys>& Eil, int kiek)
 }
 
 
-int main()  //atspausdina rezultatus
+int main()  
 
 {
 	vector<int> skaiciai;
