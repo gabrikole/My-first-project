@@ -63,8 +63,8 @@ int generate(vector<int> pazymiai)
 	int kiek;
 	cout << "iveskite studentu skaiciu: " << endl;
 	cin >> kiek;
-	string pavadinimas = "Studentai_" + std::to_string(kiek) + ".txt";
-	std::ofstream out_data(pavadinimas);
+	string pavadinimas = "Studentai_" + to_string(kiek) + ".txt";
+	ofstream out_data(pavadinimas);
 	vector<int> skaiciai;
 	duomenys Eil;
 	out_data << setw(20) << left << "Vardas"
@@ -80,7 +80,7 @@ int generate(vector<int> pazymiai)
 	}
 	return kiek;
 }
-void read(std::list<duomenys>& Eil, int kiek) 
+void read(list<duomenys>& Eil, int kiek) 
 {
 	int student_counter = 0;
 	ifstream fileRead;
@@ -107,7 +107,7 @@ void read(std::list<duomenys>& Eil, int kiek)
 	}
 }
 
-int main()  //atspausdina rezultatus
+int main()  
 
 {
 	vector<int> skaiciai;
@@ -115,10 +115,10 @@ int main()  //atspausdina rezultatus
 	int kiek = generate(skaiciai);
 	list<duomenys> studentai;
 	read(studentai, kiek);
-	list<duomenys> protingi;
+	list<duomenys> kietekai;
 	list<duomenys> vargsiukai;
 	int vargs = 0;
-	int prot = 0;
+	int kiet = 0;
 
 	auto start = std::chrono::high_resolution_clock::now();
 	auto st = start;
@@ -133,8 +133,8 @@ int main()  //atspausdina rezultatus
 		float paz = 5.00;
 		int _gp = get(studentai, j).GP;
 		if (get(studentai, j).GP >= paz) {
-			protingi.push_back(get(studentai, j));
-			prot++;
+			kietekai.push_back(get(studentai, j));
+			kiet++;
 		}
 	}
 	auto end = std::chrono::high_resolution_clock::now();
@@ -155,13 +155,12 @@ int main()  //atspausdina rezultatus
 	std::chrono::duration<double> diff1 = end1 - start1;
 	cout << "Failo isvedimas su " + to_string(kiek) + " studentais  i vargsiukus uztruko : " << diff1.count() << " s\n";
 
-	pav = "kietekai3_" + to_string(kiek) + ".txt";
+	pav = "kietekai_" + to_string(kiek) + ".txt";
 	ofstream prot_failas(pav);
 	auto start2 = std::chrono::high_resolution_clock::now();
 	auto st2 = start2;
 	for (int j = 0; j < kiek; j++) {
 		float paz = 5.00;
-		//int _gp = get(studentai, j).GP;
 		if (get(studentai, j).GP >= paz) {
 			prot_failas << get(studentai, j).Vard << setw(20) << get(studentai, j).Pav << setw(18) << get(studentai, j).GP << endl;
 		}
